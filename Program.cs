@@ -18,7 +18,7 @@ namespace Uploader
             System.Diagnostics.Process[] myProcesses = System.Diagnostics.Process.GetProcessesByName(ProcessName);
             if (myProcesses.Length > 1)
             {
-                MessageBox.Show("启动已程序，请勿重复运行。");
+                MessageBox.Show("程序已启动，请勿重复运行。");
             }
             else
             {

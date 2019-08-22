@@ -3,3 +3,6 @@
 .svn
 bin
 obj
+UploaderSetup/Debug
+UploaderSetup/Release/setup.exe
+

@@ -112,25 +112,7 @@ namespace Uploader
                         try
                         {
                             // 图片压缩处理
-                            if (File.Exists(currentFile))
-                            {
-                                FileInfo fileInfo = new FileInfo(currentFile);
-                                if (fileInfo.Length / 1024.0 > 2048)
-                                {
-                                    int flag = (int)System.Math.Ceiling(2048.0 / (fileInfo.Length / 1024.0) * 100.0);
-
-                                    string newPath = System.AppDomain.CurrentDomain.BaseDirectory + "Temp/" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + Path.GetExtension(currentFile);
-                                    if (!Directory.Exists(Directory.GetParent(newPath).FullName))
-                                    {
-                                        Directory.CreateDirectory(Directory.GetParent(newPath).FullName);
-                                    }
-
-                                    if (GetPicThumbnail(currentFile, newPath, flag))
-                                    {
-                                        tempFile = newPath;
-                                    }
-                                }
-                            }
+                            CompressedPicture(currentFile, out tempFile);
                         }
                         catch
                         {
@@ -307,7 +289,13 @@ namespace Uploader
 
             if (UploadInfo.Error == 0 || UploadInfo.Error >= 3)
             {
-                OnUploadCompleted(message, UploadInfo.Error > 0);
+                OnUploadCompleted(message, UploadInfo.Error == 0);
+            }
+
+            if (UploadClient != null)
+            {
+                UploadClient.Dispose();
+                UploadClient = null;
             }
 
             Option.ShareMutex.ReleaseMutex();
@@ -330,7 +318,7 @@ namespace Uploader
                 Log.WriteRecord(UploadInfo.CurrentFile + " | " + message);
             }
 
-            // 删除临时文件
+            // 删除压缩临时文件
             if (UploadInfo.CurrentFile != UploadInfo.TempFile && File.Exists(UploadInfo.TempFile))
             {
                 File.Delete(UploadInfo.TempFile);
@@ -338,8 +326,11 @@ namespace Uploader
 
             UploadInfo = null;
 
-            UploadClient.Dispose();
-            UploadClient = null;
+            if (UploadClient != null)
+            {
+                UploadClient.Dispose();
+                UploadClient = null;
+            }
         }
 
         /**
@@ -456,17 +447,53 @@ namespace Uploader
             }
         }
 
+        // 每次压缩文件名唯一引索
+        private static long CompressedIndex = 0;
+
+        // 压缩阈值
+        private const double CompressedThreshold = 2048 * 1024;
+
         /**
          * 无损压缩图片
          */
-        public static bool GetPicThumbnail(string sFile, string dFile, int flag)
+        public static bool CompressedPicture(string sFile, out string dFile)
         {
+            dFile = String.Empty;
+
+            if (!File.Exists(sFile))
+            {
+                return false;
+            }
+
+            FileInfo fileInfo = new FileInfo(sFile);
+            if (fileInfo != null && fileInfo.Length > CompressedThreshold)
+            {
+                dFile = System.AppDomain.CurrentDomain.BaseDirectory + "Temp/" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + (++CompressedIndex) + Path.GetExtension(sFile);
+                if (!Directory.Exists(Directory.GetParent(dFile).FullName))
+                {
+                    Directory.CreateDirectory(Directory.GetParent(dFile).FullName);
+                }
+            }
+            else
+            {
+                dFile = sFile;
+
+                return false;
+            }
+
             System.Drawing.Image iSource = System.Drawing.Image.FromFile(sFile);
             ImageFormat tFormat = iSource.RawFormat;
             
             int sW = iSource.Width, sH = iSource.Height;
-            int dWidth = (int)(sW * Math.Min(1.0, 2 * flag / 100.0));
-            int dHeight = (int)(sH * Math.Min(1.0, 2 * flag / 100.0));
+
+            // 每次压缩80质量
+            const int flag = 80;
+
+            // 每次压缩80%分辨率
+            const double sRate = 0.8;
+
+            int dWidth = (int)(sW * sRate);
+            int dHeight = (int)(sH * sRate);
 
             //按比例缩放
             Size tem_size = new Size(iSource.Width, iSource.Height);
@@ -503,9 +530,10 @@ namespace Uploader
             //以下代码为保存图片时，设置压缩质量  
             EncoderParameters ep = new EncoderParameters();
             long[] qy = new long[1];
-            qy[0] = 100;//设置压缩的比例1-100  
+            qy[0] = flag;
             EncoderParameter eParam = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, qy);
             ep.Param[0] = eParam;
+
             try
             {
                 ImageCodecInfo[] arrayICI = ImageCodecInfo.GetImageEncoders();
@@ -526,6 +554,21 @@ namespace Uploader
                 {
                     ob.Save(dFile, tFormat);
                 }
+
+                // 图片大小大于阈值递归压缩
+                FileInfo dFileInfo = new FileInfo(dFile);
+                if (dFileInfo != null && dFileInfo.Length > CompressedThreshold)
+                {
+                    sFile = dFile;
+
+                    bool bResult = CompressedPicture(dFile, out dFile);
+
+                    // 删除源
+                    File.Delete(sFile);
+
+                    return bResult;
+                }
+
                 return true;
             }
             catch
