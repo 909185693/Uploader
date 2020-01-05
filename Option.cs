@@ -449,10 +449,7 @@ namespace Uploader
 
         // 每次压缩文件名唯一引索
         private static long CompressedIndex = 0;
-
-        // 压缩阈值
-        private const double CompressedThreshold = 2048 * 1024;
-
+        
         /**
          * 无损压缩图片
          */
@@ -464,6 +461,9 @@ namespace Uploader
             {
                 return false;
             }
+
+            // 压缩阈值
+            long CompressedThreshold = Config.Base.CompressSize * 1024;
 
             FileInfo fileInfo = new FileInfo(sFile);
             if (fileInfo != null && fileInfo.Length > CompressedThreshold)
@@ -487,10 +487,10 @@ namespace Uploader
             int sW = iSource.Width, sH = iSource.Height;
 
             // 每次压缩80质量
-            const int flag = 80;
+            int flag = Config.Base.CompressQuality;
 
             // 每次压缩80%分辨率
-            const double sRate = 0.8;
+            double sRate = (double)Config.Base.CompressQuality * 0.01;
 
             int dWidth = (int)(sW * sRate);
             int dHeight = (int)(sH * sRate);

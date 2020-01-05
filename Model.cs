@@ -15,6 +15,8 @@ namespace Uploader
             this.Password = String.Empty;
             this.ScannDirectorys = new List<string>();
             this.FileFormats = new List<string>();
+            this.CompressSize = 2048;
+            this.CompressQuality = 80;
         }
 
         public string ServerAddress { get; set; }
@@ -26,6 +28,10 @@ namespace Uploader
         public List<string> ScannDirectorys { get; set; }
 
         public List<string> FileFormats { get; set; }
+
+        public int CompressSize { get; set; }
+
+        public int CompressQuality { get; set; }
     }
 
     public class UploadInfo

@@ -41,12 +41,17 @@
             this.FileFormatListBox = new System.Windows.Forms.ListBox();
             this.AddFileFormatButton = new System.Windows.Forms.Button();
             this.RemoveFileFormatButton = new System.Windows.Forms.Button();
+            this.CompressSizeLabel = new System.Windows.Forms.Label();
+            this.CompressSizeTextBox = new System.Windows.Forms.TextBox();
+            this.CompressSizeUniTlabel = new System.Windows.Forms.Label();
+            this.CompressQualityLabel = new System.Windows.Forms.Label();
+            this.CompressQualityTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // SaveButton
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveButton.Location = new System.Drawing.Point(236, 244);
+            this.SaveButton.Location = new System.Drawing.Point(236, 317);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 0;
@@ -57,7 +62,7 @@
             // ExitButton
             // 
             this.ExitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExitButton.Location = new System.Drawing.Point(317, 244);
+            this.ExitButton.Location = new System.Drawing.Point(317, 317);
             this.ExitButton.Name = "ExitButton";
             this.ExitButton.Size = new System.Drawing.Size(75, 23);
             this.ExitButton.TabIndex = 0;
@@ -160,11 +165,59 @@
             this.RemoveFileFormatButton.UseVisualStyleBackColor = true;
             this.RemoveFileFormatButton.Click += new System.EventHandler(this.RemoveFileFormatButton_Click);
             // 
+            // CompressSizeLabel
+            // 
+            this.CompressSizeLabel.AutoSize = true;
+            this.CompressSizeLabel.Location = new System.Drawing.Point(16, 245);
+            this.CompressSizeLabel.Name = "CompressSizeLabel";
+            this.CompressSizeLabel.Size = new System.Drawing.Size(65, 12);
+            this.CompressSizeLabel.TabIndex = 9;
+            this.CompressSizeLabel.Text = "压缩限制：";
+            // 
+            // CompressSizeTextBox
+            // 
+            this.CompressSizeTextBox.Location = new System.Drawing.Point(97, 242);
+            this.CompressSizeTextBox.Name = "CompressSizeTextBox";
+            this.CompressSizeTextBox.Size = new System.Drawing.Size(100, 21);
+            this.CompressSizeTextBox.TabIndex = 10;
+            this.CompressSizeTextBox.TextChanged += new System.EventHandler(this.CompressSizeTextBox_TextChanged);
+            // 
+            // CompressSizeUniTlabel
+            // 
+            this.CompressSizeUniTlabel.AutoSize = true;
+            this.CompressSizeUniTlabel.Location = new System.Drawing.Point(203, 245);
+            this.CompressSizeUniTlabel.Name = "CompressSizeUniTlabel";
+            this.CompressSizeUniTlabel.Size = new System.Drawing.Size(17, 12);
+            this.CompressSizeUniTlabel.TabIndex = 9;
+            this.CompressSizeUniTlabel.Text = "KB";
+            // 
+            // CompressQualityLabel
+            // 
+            this.CompressQualityLabel.AutoSize = true;
+            this.CompressQualityLabel.Location = new System.Drawing.Point(16, 281);
+            this.CompressQualityLabel.Name = "CompressQualityLabel";
+            this.CompressQualityLabel.Size = new System.Drawing.Size(65, 12);
+            this.CompressQualityLabel.TabIndex = 9;
+            this.CompressQualityLabel.Text = "压缩质量：";
+            // 
+            // CompressQualityTextBox
+            // 
+            this.CompressQualityTextBox.Location = new System.Drawing.Point(97, 278);
+            this.CompressQualityTextBox.Name = "CompressQualityTextBox";
+            this.CompressQualityTextBox.Size = new System.Drawing.Size(100, 21);
+            this.CompressQualityTextBox.TabIndex = 10;
+            this.CompressQualityTextBox.TextChanged += new System.EventHandler(this.CompressQualityTextBox_TextChanged);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 279);
+            this.ClientSize = new System.Drawing.Size(404, 352);
+            this.Controls.Add(this.CompressQualityTextBox);
+            this.Controls.Add(this.CompressSizeTextBox);
+            this.Controls.Add(this.CompressQualityLabel);
+            this.Controls.Add(this.CompressSizeUniTlabel);
+            this.Controls.Add(this.CompressSizeLabel);
             this.Controls.Add(this.FileFormatListBox);
             this.Controls.Add(this.FileFormatLable);
             this.Controls.Add(this.ScanFolderListBox);
@@ -203,5 +256,10 @@
         public System.Windows.Forms.ListBox FileFormatListBox;
         private System.Windows.Forms.Button AddFileFormatButton;
         private System.Windows.Forms.Button RemoveFileFormatButton;
+        private System.Windows.Forms.Label CompressSizeLabel;
+        private System.Windows.Forms.TextBox CompressSizeTextBox;
+        private System.Windows.Forms.Label CompressSizeUniTlabel;
+        private System.Windows.Forms.Label CompressQualityLabel;
+        private System.Windows.Forms.TextBox CompressQualityTextBox;
     }
 }

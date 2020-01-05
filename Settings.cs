@@ -40,6 +40,10 @@ namespace Uploader
                 FileFormatListBox.Items.Add(item);
             }
 
+            CompressSizeTextBox.Text = Config.Base.CompressSize.ToString();
+
+            CompressQualityTextBox.Text = Config.Base.CompressQuality.ToString();
+
             bIsModify = false;
         }
 
@@ -161,6 +165,22 @@ namespace Uploader
         }
 
         /**
+         * 压缩大小修改
+         */
+        private void CompressSizeTextBox_TextChanged(object sender, EventArgs e)
+        {
+            bIsModify = true;
+        }
+
+        /**
+         * 压缩质量修改
+         */
+        private void CompressQualityTextBox_TextChanged(object sender, EventArgs e)
+        {
+            bIsModify = true;
+        }
+
+        /**
          * 保存配置
          */
         private void SaveButton_Click(object sender, EventArgs e)
@@ -185,6 +205,37 @@ namespace Uploader
                     foreach (var item in FileFormatListBox.Items)
                     {
                         Config.Base.FileFormats.Add(item.ToString());
+                    }
+
+                    try
+                    {
+                        Config.Base.CompressSize = Convert.ToInt32(CompressSizeTextBox.Text);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("压缩限制只能填写数字");
+                        return;
+                    }
+
+                    if (Config.Base.CompressSize < 128)
+                    {
+                        MessageBox.Show("压缩限制不能小于128KB");
+                        return;
+                    }
+
+                    try
+                    {
+                        Config.Base.CompressQuality = Convert.ToInt32(CompressQualityTextBox.Text);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("压缩质量只能填写数字");
+                        return;
+                    }
+
+                    if (Config.Base.CompressQuality < 1 || Config.Base.CompressQuality > 99)
+                    {
+                        MessageBox.Show("压缩质量只能介于1-99之间");
                     }
 
                     Config.Save();
